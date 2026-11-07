@@ -1,0 +1,38 @@
+// AE2 Cinematic: Cinematic Interactions scenes for Applied Energistics 2 (NeoForge 1.21.1).
+//   ./gradlew build  -> build/libs/ae2cinematic-<version>.jar
+// AE2 and Cinematic Interactions are compiled against from the jars in this folder and never shipped.
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.+'
+}
+
+version = mod_version
+group = mod_group_id
+base { archivesName = mod_id }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+    mods {
+        "${mod_id}" { sourceSet(sourceSets.main) }
+    }
+    // Dev runs load AE2, Cinematic Interactions and GuideME (AE2 needs it) from run/mods - copy the jars there yourself.
+    runs {
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+}
+
+dependencies {
+    compileOnly files('appliedenergistics2-19.2.18.jar', 'Cinematic Interaction-NeoForge-1.21.1-0.18.30.jar')
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
