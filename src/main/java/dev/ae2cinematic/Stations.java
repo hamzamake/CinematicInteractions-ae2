@@ -5,6 +5,7 @@ import appeng.api.orientation.RelativeSide;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.CondenserMenu;
@@ -29,9 +30,11 @@ import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
@@ -72,7 +75,8 @@ public final class Stations {
             new Entry("molecular_assembler", "molecular_assembler", MolecularAssemblerMenu.class, s -> AROUND,
                     block(() -> MolecularAssemblerMenu.TYPE)),
             new Entry("pattern_provider", "pattern_provider", PatternProviderMenu.class, s -> AROUND,
-                    block(() -> PatternProviderMenu.TYPE)));
+                    block(() -> PatternProviderMenu.TYPE)),
+            new Entry("charger", "charger", ChargerMenu.class, Stations::front, Stations::openCharger));
 
     private static final Map<ResourceLocation, Entry> BY_BLOCK = ALL.stream().collect(Collectors.toMap(Entry::blockId, e -> e));
 
@@ -90,6 +94,12 @@ public final class Stations {
             BlockEntity be = player.level().getBlockEntity(pos);
             return be != null && MenuOpener.open(type.get(), player, MenuLocators.forBlockEntity(be));
         };
+    }
+
+    private static boolean openCharger(ServerPlayer player, BlockPos pos) {
+        return player.level().getBlockEntity(pos) instanceof ChargerBlockEntity charger
+                && player.openMenu(new SimpleMenuProvider((id, inventory, p) -> new ChargerMenu(id, inventory, charger), Component.empty()),
+                        buf -> buf.writeBlockPos(pos)).isPresent();
     }
 
     private static boolean openEncoder(ServerPlayer player, BlockPos pos) {

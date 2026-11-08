@@ -4,7 +4,7 @@ license = "MIT"
 
 [[mods]]
 modId = "ae2cinematic"
-version = "1.0.1"
+version = "2.0.0"
 displayName = "AE2 Cinematic Interactions"
 authors = "HamzaTom"
 description = '''Cinematic Interactions scenes for Applied Energistics 2: pull cells out of ME Drives, link terminals on the Wireless Access Point, smack patterns into the Pattern Encoding Terminal, and more.'''

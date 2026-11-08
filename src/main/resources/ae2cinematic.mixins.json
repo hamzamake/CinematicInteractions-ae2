@@ -8,9 +8,6 @@
     "ServerPlayerMixin",
     "StationEventsMixin"
   ],
-  "client": [
-    "ItemInHandRendererAccessor"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

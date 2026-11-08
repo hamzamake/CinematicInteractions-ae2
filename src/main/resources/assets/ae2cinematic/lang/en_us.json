@@ -46,5 +46,6 @@
   "ae2cinematic.condenser.mode.singularity": "Singularity",
   "ae2cinematic.condenser.voiding": "Trash mode: items are destroyed, nothing is made",
   "ae2cinematic.condenser.status": "Power: %s / %s",
-  "ae2cinematic.condenser.no_component": "No storage component: it can't hold power, so items are destroyed for nothing"
+  "ae2cinematic.condenser.no_component": "No storage component: it can't hold power, so items are destroyed for nothing",
+  "ae2cinematic.hint.charger": "Click the item to grab it out • Hold something chargeable and click to put it in"
 }

@@ -7,13 +7,19 @@ import appeng.menu.implementations.MolecularAssemblerMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
 import dev.ae2cinematic.Ae2Cinematic;
+import dev.ae2cinematic.ChargerMenu;
 import dev.ae2cinematic.Stations;
 import dev.dyslexic.cinematic.api.client.AddonScenes;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 public final class Ae2CinematicClient {
     private Ae2CinematicClient() {
@@ -23,13 +29,21 @@ public final class Ae2CinematicClient {
         return ResourceLocation.fromNamespaceAndPath(Ae2Cinematic.MODID, name);
     }
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
+        // Minecraft only opens a menu that has a screen; the scene takes the screen's place, so this one is never drawn
+        modBus.addListener((RegisterMenuScreensEvent e) -> e.register(ChargerMenu.TYPE.get(),
+                (ChargerMenu menu, Inventory inventory, Component title) -> new AbstractContainerScreen<>(menu, inventory, title) {
+                    @Override
+                    protected void renderBg(GuiGraphics gui, float partial, int mouseX, int mouseY) {
+                    }
+                }));
         AddonScenes.register(id("drive"), (pos, state, player, side) -> new DriveStation(pos, side, state));
         AddonScenes.register(id("wireless_access_point"), (pos, state, player, side) -> new WapStation(pos, side, state));
         // face the terminal that was actually clicked, not just the nearest side of the cable bus
         AddonScenes.register(id("pattern_encoding_terminal"),
                 (pos, state, player, side) -> new EncoderStation(pos, Stations.ENCODER_SIDE.getOrDefault(pos, side)));
 
+        AddonScenes.register(id("charger"), (pos, state, player, side) -> new ChargerStation(pos, side));
         AddonScenes.register(id("inscriber"), (pos, state, player, side) -> new SimpleStation<>(pos, side, InscriberMenu.class, "inscriber",
                 (s, menu) -> {
                     List<SlotStation.Spot> spots = new ArrayList<>();
@@ -65,8 +79,6 @@ public final class Ae2CinematicClient {
                     s.grid(spots, menu.getSlots(SlotSemantics.ENCODED_PATTERN), 9, 3, -0.22, 0.2, 0.22, 0.07, false, "patterns");
                     return spots;
                 }));
-
-        NeoForge.EVENT_BUS.register(ChargerHand.class);
     }
 
     static void add(List<SlotStation.Spot> spots, SimpleStation<?> s, Slot slot, double u, double v, boolean drag, String label) {
