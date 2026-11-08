@@ -1,0 +1,65 @@
+// AE2 Cinematic: Cinematic Interactions scenes for Applied Energistics 2 (Forge 1.20.1).
+//   ./gradlew build  -> build/libs/ae2cinematic-<version>.jar
+// AE2, Cinematic Interactions and GuideME come from the jars in libs/ (remapped for dev) and are never shipped.
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.+'
+}
+
+version = mod_version
+group = mod_group_id
+base { archivesName = mod_id }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+    mods {
+        "${mod_id}" { sourceSet(sourceSets.main) }
+    }
+    runs {
+        client {
+            client()
+            programArguments.addAll '--username', 'Dev', '--width', '1280', '--height', '720'
+            // ./gradlew runClient -PtestServer joins the runServer dev server straight away
+            if (project.hasProperty('testServer')) {
+                programArguments.addAll '--quickPlayMultiplayer', '127.0.0.1:25565'
+            }
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
+}
+
+repositories {
+    // a hand-made maven layout (libs/local/<name>/<version>/<name>-<version>.jar): flatDir jars skip remapping
+    maven {
+        url = file('libs')
+        metadataSources { artifact() }
+    }
+}
+
+dependencies {
+    modImplementation 'local:ae2:15.4.12'
+    modImplementation 'local:cinematic:0.18.30'
+    modRuntimeOnly 'local:guideme:20.1.15'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+// Forge 1.20.1 finds mixin configs and the mod version (${file.jarVersion} in mods.toml) in the jar manifest
+jar {
+    manifest.attributes('MixinConfigs': "${mod_id}.mixins.json", 'Implementation-Version': project.version)
+}

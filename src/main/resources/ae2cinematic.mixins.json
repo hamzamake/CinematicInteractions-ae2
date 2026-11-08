@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.ae2cinematic.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MenuActionsMixin",
+    "ServerPlayerMixin",
+    "StationEventsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "ae2cinematic.refmap.json"
+}

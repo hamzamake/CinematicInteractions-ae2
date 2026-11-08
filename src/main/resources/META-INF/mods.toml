@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+
+[[mods]]
+modId = "ae2cinematic"
+version = "${file.jarVersion}"
+displayName = "AE2 Cinematic Interactions"
+authors = "HamzaTom"
+description = '''Cinematic Interactions scenes for Applied Energistics 2: pull cells out of ME Drives, link terminals on the Wireless Access Point, smack patterns into the Pattern Encoding Terminal, and more.'''
+
+[[dependencies.ae2cinematic]]
+modId = "forge"
+mandatory = true
+versionRange = "[47.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ae2cinematic]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ae2cinematic]]
+modId = "ae2"
+mandatory = true
+versionRange = "[15.4,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.ae2cinematic]]
+modId = "cinematic"
+mandatory = true
+versionRange = "[0.18.30,)"
+ordering = "AFTER"
+side = "BOTH"
